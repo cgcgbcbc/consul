@@ -1,0 +1,17 @@
+consul:
+  image: progrium/consul
+  hostname: node1
+  volumes:
+  - /container/consul/data:/data
+  - /container/consul/consul.json:/config/consul.json
+  ports:
+  - "172.17.42.1:8300:8300"
+  - "172.17.42.1:8301:8301"
+  - "172.17.42.1:8301:8301/udp"
+  - "172.17.42.1:8302:8302"
+  - "172.17.42.1:8302:8302/udp"
+  - "172.17.42.1:8400:8400"
+  - "172.17.42.1:8500:8500"
+  - "53:53/udp"
+  command: -server -advertise 172.17.42.1 -bootstrap -ui-dir /ui 
+  restart: always
