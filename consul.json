@@ -6,6 +6,7 @@
 		"dns": 53
 	},
 	"recursor": "166.111.8.28",
-	"disable_update_check": true
+	"disable_update_check": true,
+	"domain":"lab.mu"
 }
 
