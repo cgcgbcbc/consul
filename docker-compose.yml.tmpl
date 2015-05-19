@@ -1,0 +1,22 @@
+consul:
+  image: progrium/consul
+  hostname: node1
+  volumes:
+  - /container/consul/data:/data
+  - /container/consul/consul.json:/config/consul.json
+  ports:
+  - "{{with .IP}}{{.}}:{{end}}8300:8300"
+  - "{{with .IP}}{{.}}:{{end}}8301:8301"
+  - "{{with .IP}}{{.}}:{{end}}8301:8301/udp"
+  - "{{with .IP}}{{.}}:{{end}}8302:8302"
+  - "{{with .IP}}{{.}}:{{end}}8302:8302/udp"
+  - "{{with .IP}}{{.}}:{{end}}8400:8400"
+  - "{{with .IP}}{{.}}:{{end}}8500:8500"
+  - "53:53/udp"
+  command: -server -advertise {{.advertise}} -bootstrap -ui-dir /ui
+  restart: always
+  dns:
+  {{with .IP}}- {{.}}
+  {{end}}{{/*
+  */}}- {{with .dns}}{{.}}{{else}}8.8.8.8{{end}}
+  {{with .dns_search}}dns_search: {{.}}{{end}}
