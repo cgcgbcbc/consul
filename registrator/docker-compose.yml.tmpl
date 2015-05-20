@@ -1,0 +1,10 @@
+registrator:
+  image: progrium/registrator{{/*
+  */}}{{with .hostname}}
+  hostname: {{.}}{{/*
+  */}}{{end}}
+  volumes:
+  - /var/run/docker.sock:/tmp/docker.sock
+  command: -internal consul://{{.consul}}:8500
+  restart: always
+
