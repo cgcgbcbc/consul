@@ -1,6 +1,6 @@
-consul:
+base:
   image: progrium/consul
-  hostname: node1
+  {{with .hostname}}hostname: {{.}}{{end}}
   volumes:
   - /container/consul/data:/data
   - /container/consul/consul.json:/config/consul.json
@@ -13,10 +13,27 @@ consul:
   - "{{with .IP}}{{.}}:{{end}}8400:8400"
   - "{{with .IP}}{{.}}:{{end}}8500:8500"
   - "53:53/udp"
-  command: -server -advertise {{.advertise}} -bootstrap -ui-dir /ui
   restart: always
   dns:
   {{with .IP}}- {{.}}
   {{end}}{{/*
   */}}- {{with .dns}}{{.}}{{else}}8.8.8.8{{end}}
   {{with .dns_search}}dns_search: {{.}}{{end}}
+
+server:
+  extends:
+    file: docker-compose.yml
+    service: base
+  {{if .join}}
+  command: -server -advertise {{.advertise}} -join {{.join}} -ui-dir /ui
+  {{else}}
+  command: -server -advertise {{.advertise}} {{with .bootstrap}}-bootstrap-expect {{.}}{{else}}-bootstrap{{end}} -ui-dir /ui
+  {{end}}
+
+{{if .join}}
+client:
+  extends:
+    file: docker-compose.yml
+    service: base
+  command: -advertise {{.advertise}} -join {{.join}} -ui-dir /ui
+{{end}}
